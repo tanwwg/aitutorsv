@@ -8,27 +8,28 @@ const openai = new OpenAI({
     dangerouslyAllowBrowser: true
 });
 
+export enum QuestionMode {
+    WaitingForPrompt, Submitting
+}
+
+
 type QuestionDisplay = {
     question: string,
-    chatDisplay: OpenAI.Chat.Completions.ChatCompletionMessageParam[]
+    chatDisplay: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
+    mode: QuestionMode
 }
 
 export const display: QuestionDisplay = $state({
     question: "",
-    chatDisplay: []
+    chatDisplay: [],
+    mode: QuestionMode.WaitingForPrompt,
 });
 
-enum QuestionMode {
-    WaitingForPrompt, Submitting
-}
 
 type QuestionState = {
     json: any | null,
     systemPromptFunc: HandlebarsTemplateDelegate<any> | null,
-
     questionIndex: number,
-    mode: QuestionMode,
-
     chatMessages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]
 };
 
@@ -36,8 +37,6 @@ var questionState: QuestionState = {
     json: null,
     systemPromptFunc: null,
     questionIndex: 0,
-    mode: QuestionMode.WaitingForPrompt,
-
     chatMessages: []
 };
 
@@ -66,14 +65,14 @@ function setLastElement<T>(arr: T[], value: T) {
     }
   }
 
-export async function sendPrompt(prompt: string, react: () => void) {
+export async function sendPrompt(prompt: string) {
+    display.mode = QuestionMode.Submitting;
     let userMessage: OpenAI.Chat.Completions.ChatCompletionMessageParam = {
         role: "user",
         content: prompt
     };
     questionState.chatMessages.push(userMessage);
     display.chatDisplay.push(userMessage);
-    react();
  
     const stream = await openai.chat.completions.create({
         model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
@@ -87,13 +86,12 @@ export async function sendPrompt(prompt: string, react: () => void) {
     };
     questionState.chatMessages.push(reply);
     display.chatDisplay.push(reply);
-    react();    
     for await (const chunk of stream) {
         let text = chunk.choices[0]?.delta?.content || '';
         console.log(text);
         reply.content += text;
         setLastElement(questionState.chatMessages, reply);
         setLastElement(display.chatDisplay, reply);
-        react();
     }
+    display.mode = QuestionMode.WaitingForPrompt;
 }
