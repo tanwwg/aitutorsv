@@ -1,19 +1,23 @@
 <script lang="ts">
     import { display, nextQuestion, sendPrompt, QuestionMode } from '../questions.svelte.js';
     import { onMount } from 'svelte';
-
-    onMount(() => {
-        nextQuestion();
-    })
+    import { initSpeech, speech, startListening, stopListening } from '../speech.svelte.js';
 
     let promptText: HTMLInputElement | undefined = $state();
     let promptInput = $state("");
 
     let scrollHere: HTMLElement | undefined = $state();
 
+    onMount(() => {
+        initSpeech((s) => {
+            promptInput = s;            
+        })
+        nextQuestion();
+    })
+
     function scrollToEnd() {
         scrollHere?.scrollIntoView({ behavior: 'smooth', block: 'end' });        
-        console.log(`scrollhere ${scrollHere}`);
+        // console.log(`scrollhere ${scrollHere}`);
     }
 
     // keeps everything in view
@@ -69,19 +73,28 @@
     </div>
 
     <div>
-        {#if display.mode == QuestionMode.WaitingForPrompt}
-            <div class="mt-3">
-                <input type="text" id="prompt-text" class="form-control" 
-                    onkeydown={onReturn}
-                    bind:this={promptText} 
-                    bind:value={promptInput} 
-                    placeholder="Prompt">
-            </div>
-            <button class="btn btn-primary mt-3" type="button" onclick={submitPrompt}>Submit</button>
-            <button id="start-listen" class="btn btn-secondary mt-3" type="button">🎤 Start Listening</button>
-            <button id="stop-listen" class="btn btn-danger mt-3" type="button" style="display: none;">Stop Listening</button>
+        {#if display.mode != QuestionMode.Submitting}
+            {#if display.mode == QuestionMode.WaitingForPrompt}
+                <div class="mt-3">
+                    <input type="text" id="prompt-text" class="form-control" 
+                        onkeydown={onReturn}
+                        bind:this={promptText} 
+                        bind:value={promptInput} 
+                        placeholder="Prompt">
+                </div>
+                <button class="btn btn-primary mt-3" type="button" onclick={submitPrompt}>Submit</button>
 
-            <button id="next-question" class="btn btn-success mt-3 float-end" type="button">Next Question</button>				
+                {#if speech.hasSpeech}
+                    {#if !speech.listening}
+                        <button class="btn btn-secondary mt-3" type="button" onclick={startListening}>🎤 Start Listening</button>
+                    {:else}
+                        <button class="btn btn-danger mt-3" type="button" onclick={stopListening}>Stop Listening</button>
+                    {/if}
+                {/if}
+
+            {/if}
+
+            <button class="btn btn-success mt-3 float-end" type="button" onclick={nextQuestion}>Next Question</button>				
         {/if}
     </div>
 

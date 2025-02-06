@@ -9,7 +9,7 @@ const openai = new OpenAI({
 });
 
 export enum QuestionMode {
-    WaitingForPrompt, Submitting
+    WaitingForPrompt, Submitting, QuestionEnded
 }
 
 
@@ -48,7 +48,11 @@ export async function nextQuestion() {
     if (questionState.systemPromptFunc == null) return;
 
     var question = questionState.json.questions[questionState.questionIndex];
+
+    questionState.questionIndex += 1;
     display.question = question.display ?? question.question;
+    display.chatDisplay = [];    
+    display.mode = QuestionMode.WaitingForPrompt;
 
     let systemPrompt = questionState.systemPromptFunc(question);
     questionState.chatMessages = [{
@@ -86,12 +90,14 @@ export async function sendPrompt(prompt: string) {
     };
     questionState.chatMessages.push(reply);
     display.chatDisplay.push(reply);
+    var replyContent = "";
     for await (const chunk of stream) {
         let text = chunk.choices[0]?.delta?.content || '';
-        console.log(text);
-        reply.content += text;
+        replyContent += text;
+        reply.content = replyContent;
         setLastElement(questionState.chatMessages, reply);
         setLastElement(display.chatDisplay, reply);
     }
-    display.mode = QuestionMode.WaitingForPrompt;
+
+    display.mode = replyContent.endsWith("DONE") ? QuestionMode.QuestionEnded : QuestionMode.WaitingForPrompt;
 }
