@@ -14,15 +14,23 @@ export enum QuestionMode {
 
 
 type QuestionDisplay = {
+    questionSet: string,
     question: string,
     chatDisplay: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
-    mode: QuestionMode
+    questionNum: number,
+    totalQuestions: number,
+    mode: QuestionMode,
+    hasNextQuestion: boolean
 }
 
 export const display: QuestionDisplay = $state({
+    questionSet: "",
     question: "",
     chatDisplay: [],
+    questionNum: 0,
+    totalQuestions: 0,
     mode: QuestionMode.WaitingForPrompt,
+    hasNextQuestion: false
 });
 
 
@@ -40,16 +48,26 @@ var questionState: QuestionState = {
     chatMessages: []
 };
 
+export async function selectQuestions(page: string) {
+    questionState.json = null;
+    display.questionSet = page;
+    questionState.questionIndex = 0;
+    await nextQuestion();
+}
+
 export async function nextQuestion() {
     if (questionState.json == null) {
-        questionState.json = await (await fetch("/questions.json")).json();
+        questionState.json = await (await fetch(`/${display.questionSet}_questions.json`)).json();
         questionState.systemPromptFunc = Handlebars.compile(questionState.json.system.prompt);
+        display.totalQuestions = questionState.json.questions.length;
     }
     if (questionState.systemPromptFunc == null) return;
 
     var question = questionState.json.questions[questionState.questionIndex];
-
     questionState.questionIndex += 1;
+    display.questionNum = questionState.questionIndex;
+    display.hasNextQuestion = display.questionNum < display.totalQuestions;
+    
     display.question = question.display ?? question.question;
     display.chatDisplay = [];    
     display.mode = QuestionMode.WaitingForPrompt;

@@ -9,7 +9,8 @@
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"questions": "yq -o=json ./dsa_questions.yml >static/dsa_questions.json; yq -o=json ./p6science_questions.yml >static/p6science_questions.json"		
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",

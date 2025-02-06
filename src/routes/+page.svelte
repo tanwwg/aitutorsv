@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { display, nextQuestion, sendPrompt, QuestionMode } from '../questions.svelte.js';
+    import { display, nextQuestion, sendPrompt, QuestionMode, selectQuestions } from '../questions.svelte.js';
     import { onMount } from 'svelte';
     import { initSpeech, speech, startListening, stopListening } from '../speech.svelte.js';
 
@@ -12,7 +12,7 @@
         initSpeech((s) => {
             promptInput = s;            
         })
-        nextQuestion();
+        selectQuestions("dsa");
     })
 
     function scrollToEnd() {
@@ -47,10 +47,20 @@
 </script>
 
 <div class="container mt-5">
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <button class="nav-link" class:active={display.questionSet == 'dsa'}  onclick={(e) => selectQuestions("dsa")}>Data Structures</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" class:active={display.questionSet == 'p6science'} onclick={(e) => selectQuestions("p6science")}>PSLE Science</button>            
+        </li>
+    </ul>
+
     <div class="card p-4 shadow">
-        <h1 id="heading" class="mb-3">Question</h1>
-        <div id="question">
-            {display.question}
+        <h3 class="mb-3">Question {display.questionNum} / {display.totalQuestions}</h3>
+        <div>
+            {@html display.question}
         </div>
     </div>
 
@@ -72,32 +82,32 @@
         {/each}
     </div>
 
+    {#if display.mode == QuestionMode.WaitingForPrompt}
+        <div class="mt-3">
+            <input type="text" id="prompt-text" class="form-control" 
+                onkeydown={onReturn}
+                bind:this={promptText} 
+                bind:value={promptInput} 
+                placeholder="Prompt">
+        </div>
+    {/if}
+
     <div>
         {#if display.mode != QuestionMode.Submitting}
-            {#if display.mode == QuestionMode.WaitingForPrompt}
-                <div class="mt-3">
-                    <input type="text" id="prompt-text" class="form-control" 
-                        onkeydown={onReturn}
-                        bind:this={promptText} 
-                        bind:value={promptInput} 
-                        placeholder="Prompt">
-                </div>
-                <button class="btn btn-primary mt-3" type="button" onclick={submitPrompt}>Submit</button>
-
-                {#if speech.hasSpeech}
-                    {#if !speech.listening}
-                        <button class="btn btn-secondary mt-3" type="button" onclick={startListening}>🎤 Start Listening</button>
-                    {:else}
-                        <button class="btn btn-danger mt-3" type="button" onclick={stopListening}>Stop Listening</button>
-                    {/if}
+            <button class="btn btn-primary mt-3" type="button" onclick={submitPrompt}>Submit</button>
+            {#if speech.hasSpeech}
+                {#if !speech.listening}
+                    <button class="btn btn-secondary mt-3" type="button" onclick={startListening}>🎤 Start Listening</button>
+                {:else}
+                    <button class="btn btn-danger mt-3" type="button" onclick={stopListening}>Stop Listening</button>
                 {/if}
-
             {/if}
-
-            <button class="btn btn-success mt-3 float-end" type="button" onclick={nextQuestion}>Next Question</button>				
+            {#if display.hasNextQuestion}
+                <button class="btn btn-success mt-3 float-end" type="button" onclick={nextQuestion}>Next Question</button>				
+            {/if}
         {/if}
     </div>
-
+                
     <div bind:this={scrollHere} class="m-3">
 
     </div>
