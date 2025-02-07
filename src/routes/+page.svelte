@@ -26,8 +26,18 @@
         scrollToEnd();
     });
 
+    async function goNextQuestion() {
+        stopListening();
+        promptInput = "";
+        await nextQuestion();
+        promptText?.focus();
+    }
+
     async function submitPrompt() {
         let s = promptInput;
+
+        if (s.trim().length == 0) return;
+
         promptInput = "";       
 
         await sendPrompt(s);
@@ -93,7 +103,7 @@
     {/if}
 
     <div>
-        {#if display.mode != QuestionMode.Submitting}
+        {#if display.mode == QuestionMode.WaitingForPrompt}
             <button class="btn btn-primary mt-3" type="button" onclick={submitPrompt}>Submit</button>
             {#if speech.hasSpeech}
                 {#if !speech.listening}
@@ -102,9 +112,9 @@
                     <button class="btn btn-danger mt-3" type="button" onclick={stopListening}>Stop Listening</button>
                 {/if}
             {/if}
-            {#if display.hasNextQuestion}
-                <button class="btn btn-success mt-3 float-end" type="button" onclick={nextQuestion}>Next Question</button>				
-            {/if}
+        {/if}
+        {#if display.mode != QuestionMode.Submitting && display.hasNextQuestion}
+            <button class="btn btn-success mt-3 float-end" type="button" onclick={goNextQuestion}>Next Question</button>				
         {/if}
     </div>
                 
