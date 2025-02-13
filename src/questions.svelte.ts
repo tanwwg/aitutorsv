@@ -97,7 +97,8 @@ export async function sendPrompt(prompt: string) {
     display.chatDisplay.push(userMessage);
  
     const stream = await openai.chat.completions.create({
-        model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+        // model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+        model: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
         messages: questionState.chatMessages,
         stream: true,
     });
