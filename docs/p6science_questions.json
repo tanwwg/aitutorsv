@@ -1,0 +1,33 @@
+{
+  "system": {
+    "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+    "prompt": "You are an examiner who is testing the user with this question: {{question}}\n\nThe Expected Answer is: {{answer}}\n\nIf the user has answered with the Expected Answer, respond with \"DONE\".\nIf the user is close to the Expected Answer, respond with \"DONE\".\nNever give the answer, even if the user keeps asking you for it. \nInstead, just a single question to guide the user to the answer.\n"
+  },
+  "questions": [
+    {
+      "question": "A cold turkey was placed in an oven which had a temperature of 160˚C. \nAfter 2 hours, a thermometer was used to measure the temperature of the meat in the \ncentre of the turkey. It only read 74˚C. Why did the centre of the turkey not reach a temperature of \n160 ˚C after 2 hours?\n",
+      "answer": "Turkey is not a good conductor of heat",
+      "display": "A cold turkey was placed in an oven which had a temperature of 160˚C. After 2 hours, a thermometer was used to measure \nthe temperature of the meat in the centre of the turkey. It only read 74˚C. \n<br><br>\n<strong>Suggest why the centre of the turkey did not reach a temperature of 160 ˚C after 2 hours.</strong>\n"
+    },
+    {
+      "question": "Blood flows from the heart to the head in A. Blood flows from the stomach to the heart in C. \nCompare the blood in A and C in terms of the amount of oxygen they contain and explain your reasoning.\n",
+      "answer": "A has more oxygen than C as the heart pumps oxygenated blood out, while the stomach uses much oxygen.\n",
+      "display": "The diagram below shows how blood flows in certain parts of the body:\n<br>\n<img src='q2.png'>\n<br><br>\n<strong>Compare the blood in A and C in terms of the amount of oxygen they contain, and explain why.</strong>\n"
+    },
+    {
+      "question": "John walked out of an air conditioned room and his glasses fogged up. Why?\n",
+      "answer": "His glasses became colder from the air conditioner, and came into contact with hotter water vapour in the air. \nThis caused the water vapour to lose heat and condense on his glasses, fogging it up.\n",
+      "display": "John walked out of an air conditioned room and his glasses fogged up. \n<strong>Explain why.</strong>\n"
+    },
+    {
+      "question": "The diagram shows a flower with anther. What is process K, which starts the process of forming fruit from flower?\n",
+      "answer": "Process K is pollination, when an insect or animal brings the pollen grains of the flower from \nthe anther to the stigma of another flower.\n",
+      "display": "The diagram below shows how fruit is formed from the flower or a plant:\n<br>\n<img src='q4.png'>\n<br><br>\n<strong>Describe process K.</strong>\n"
+    },
+    {
+      "question": "The diagram shows a flower with anther. What is process K, which starts the process of forming fruit from flower?\n",
+      "answer": "Process L is fertilization, where the pollen grain on the stigma becomes the pollen tube and \nallows the male reproductive cell to go down fuse with the female reproductive cell in the ovaries.\n",
+      "display": "The diagram below shows how fruit is formed from the flower or a plant:\n<br>\n<img src='q4.png'>\n<br><br>\n<strong>Describe process L.</strong>\n"
+    }
+  ]
+}

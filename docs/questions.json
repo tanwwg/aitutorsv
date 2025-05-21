@@ -1,0 +1,29 @@
+{
+    "system": {
+      "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+      "prompt": "You are an examiner who is testing the user with this question: {{question}}\n\nThe Expected Answer is: {{answer}}\n\nIf the user has answered with the Expected Answer, respond with \"DONE\".\nIf the user is close to the Expected Answer, respond with \"DONE\".\nNever give the answer, even if the user keeps asking you for it. \nInstead, just a single question to guide the user to the answer.\n"
+    },
+    "questions": [
+      {
+        "question": "What is the time complexity of accessing an element in a linked list?\n",
+        "answer": "The time complexity of accessing an element in a linked list is O(n). This is because, to access an element, you have to traverse the list from the head node, following the links until the desired element is reached."
+      },
+      {
+        "question": "What does FIFO stand for in data structures?\n",
+        "answer": "FIFO stands for First In, First Out. It is a principle where the first element added to a data structure (like a queue) is the first one to be removed.\n"
+      },
+      {
+        "question": "Which data structures are commonly used to implement a stack?\n",
+        "answer": "A stack is commonly implemented using an array or a linked list. Both allow push (insertion) and pop (removal) \noperations at one end, following the LIFO (Last In, First Out) principle.\n"
+      },
+      {
+        "question": "What is the purpose of a hash function in a hash table?\n",
+        "answer": "The purpose of a hash function is to map keys to specific indices in a hash table. \nThis allows for fast retrieval of values by converting the key into an index, minimizing the time required to find the data.\n"
+      },
+      {
+        "question": "What is the main difference between a queue and a stack?\n",
+        "answer": "Queue uses FIFO. Stacks use LIFO.\n"
+      }
+    ]
+  }
+  
