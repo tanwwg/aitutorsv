@@ -57,7 +57,7 @@ export async function selectQuestions(page: string) {
 
 export async function nextQuestion() {
     if (questionState.json == null) {
-        questionState.json = await (await fetch(`/${display.questionSet}_questions.json`)).json();
+        questionState.json = await (await fetch(`${display.questionSet}_questions.json`)).json();
         questionState.systemPromptFunc = Handlebars.compile(questionState.json.system.prompt);
         display.totalQuestions = questionState.json.questions.length;
     }
